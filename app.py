@@ -33,7 +33,8 @@ if query:
     if api_key.strip():
         try:
             genai.configure(api_key=api_key.strip())
-            model = genai.GenerativeModel("gemini-2.5-flash")
+            # Updated to current active production model
+            model = genai.GenerativeModel("gemini-3.6-flash")
             
             prompt = (
                 f"You are an assistant for IEEE RAS. Answer the user's question concisely using ONLY the provided context.\n\n"
