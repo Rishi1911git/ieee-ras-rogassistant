@@ -1,37 +1,55 @@
+import os
 import streamlit as st
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_classic.chains import create_retrieval_chain
+from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 
 st.set_page_config(page_title="IEEE RAS AI Assistant", page_icon="🤖")
 st.title("🤖 IEEE RAS RAG Assistant")
 
-@st.cache_resource
-def load_rag_pipeline():
-    # 1. Load Data
+# Sidebar for Free Groq API Key
+api_key = st.sidebar.text_input("Enter Groq API Key (Free)", type="password")
+
+if api_key:
+    os.environ["GROQ_API_KEY"] = api_key
+
+    # 1. Load and Chunk Data
     loader = TextLoader("ieee_ras_info.txt")
     docs = loader.load()
-    
-    # 2. Chunk Data
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=30)
     splits = text_splitter.split_documents(docs)
-    
-    # 3. Create Vector Store with FREE HuggingFace Embeddings
+
+    # 2. Vector Embeddings
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vectorstore = FAISS.from_documents(splits, embeddings)
-    return vectorstore.as_retriever()
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
 
-retriever = load_rag_pipeline()
+    # 3. LLM Generation
+    llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
 
-# UI Query
-query = st.text_input("Ask a question about IEEE RAS:")
-if query:
-    # Retrieve top relevant context chunks
-    retrieved_docs = retriever.invoke(query)
-    
-    st.subheader("Retrieved Context & Answer:")
-    for i, doc in enumerate(retrieved_docs):
-        st.write(f"**Source Chunk {i+1}:**")
-        st.info(doc.page_content)
+    # 4. Custom Prompt
+    system_prompt = (
+        "You are an assistant for IEEE RAS. Answer the user's specific question using ONLY "
+        "the context provided below. Be concise and relevant.\n\nContext:\n{context}"
+    )
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", system_prompt),
+        ("human", "{input}"),
+    ])
+
+    question_answer_chain = create_stuff_documents_chain(llm, prompt)
+    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+
+    # 5. UI Input
+    query = st.text_input("Ask a question about IEEE RAS:")
+    if query:
+        response = rag_chain.invoke({"input": query})
+        st.subheader("Answer:")
+        st.write(response["answer"])
+else:
+    st.info("Please enter a free Groq API Key in the sidebar to run dynamic answers.")
