@@ -2,6 +2,6 @@ streamlit
 langchain
 langchain-community
 langchain-huggingface
-langchain-groq
+google-generativeai
 faiss-cpu
 sentence-transformers
