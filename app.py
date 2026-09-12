@@ -38,7 +38,7 @@ if query:
                 model="llama-3.1-8b-instant",
                 temperature=0,
                 groq_api_key=api_key.strip()
-            )
+        )
             
             prompt = (
                 f"You are an AI assistant for IEEE RAS. Answer the question concise and accurately using ONLY the context provided.\n\n"
