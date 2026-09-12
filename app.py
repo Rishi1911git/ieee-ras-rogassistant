@@ -30,8 +30,7 @@ if api_key:
     retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
 
     # 3. LLM Generation
-    llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
-
+    llm = ChatGroq(model="llama3-8b-8192", temperature=0)
     # 4. Custom Prompt
     system_prompt = (
         "You are an assistant for IEEE RAS. Answer the user's specific question using ONLY "
