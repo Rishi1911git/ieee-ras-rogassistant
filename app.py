@@ -16,8 +16,6 @@ st.title("🤖 IEEE RAS RAG Assistant")
 api_key = st.sidebar.text_input("Enter Groq API Key (Free)", type="password")
 
 if api_key:
-    os.environ["GROQ_API_KEY"] = api_key
-
     # 1. Load and Chunk Data
     loader = TextLoader("ieee_ras_info.txt")
     docs = loader.load()
@@ -29,8 +27,9 @@ if api_key:
     vectorstore = FAISS.from_documents(splits, embeddings)
     retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
 
-    # 3. LLM Generation
-    llm = ChatGroq(model="llama3-8b-8192", temperature=0)
+    # 3. LLM Generation - Explicitly pass groq_api_key
+    llm = ChatGroq(model="llama3-8b-8192", temperature=0, groq_api_key=api_key.strip())
+
     # 4. Custom Prompt
     system_prompt = (
         "You are an assistant for IEEE RAS. Answer the user's specific question using ONLY "
