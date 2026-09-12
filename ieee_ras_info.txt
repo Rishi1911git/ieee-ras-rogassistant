@@ -1,0 +1,7 @@
+The IEEE Robotics and Automation Society (IEEE RAS) is a professional society of the IEEE.
+Mission: To foster the development and facilitate the exchange of scientific and technological knowledge in Robotics and Automation that benefits members, the profession, and humanity.
+Vision: To be the most recognized and respected global organization in Robotics and Automation.
+History: Founded in 1984 as the Robotics and Automation Council (RAC) led by George Saridis. It became a full IEEE society in 1987.
+Membership: Over 19,000 members worldwide.
+Major Publications: IEEE Transactions on Robotics (T-RO), IEEE Transactions on Automation Science and Engineering (T-ASE), IEEE Robotics and Automation Letters (RA-L), and IEEE Robotics and Automation Magazine (RAM).
+Major Conferences: IEEE International Conference on Robotics and Automation (ICRA) and IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS).
