@@ -35,7 +35,7 @@ if query:
         try:
             # 2. Synthesize dynamic answer using Groq LLM
             llm = ChatGroq(
-                model="llama3-8b-8192",
+                model="llama-3.1-8b-instant",
                 temperature=0,
                 groq_api_key=api_key.strip()
             )
